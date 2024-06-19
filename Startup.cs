@@ -22,6 +22,12 @@ namespace PR45
                     Title = "Руководство для использования запросов",
                     Description = "Полное руководство для использования запросов находящихся в проекте"
                 });
+                c.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Version = "v2",
+                    Title = "Руководство для использования запросов",
+                    Description = "Полное руководство для использования запросов находящихся в проекте"
+                });
                 var filePath = Path.Combine(AppContext.BaseDirectory, "ASP_GET.xml");
                 c.IncludeXmlComments(filePath);
             });
@@ -37,6 +43,7 @@ namespace PR45
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Запросы GET");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "Запросы POST");
             });
         }
     }
