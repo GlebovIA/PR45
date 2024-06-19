@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace PR45.Controllers
 {
-    [Route("api/TaskController")]
-    public class TaskController : Controller
+    [Route("api/TasksController")]
+    public class TasksController : Controller
     {
         ///<summary>
         ///Получение списка задач
