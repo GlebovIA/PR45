@@ -8,6 +8,7 @@ using System.Linq;
 namespace PR45.Controllers
 {
     [Route("api/TasksController")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class TasksController : Controller
     {
         ///<summary>
