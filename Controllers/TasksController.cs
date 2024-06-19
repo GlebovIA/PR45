@@ -82,5 +82,34 @@ namespace PR45.Controllers
                 return StatusCode(500);
             }
         }
+        ///<summary>
+        ///Метод изменения задачи
+        ///</summary>
+        ///<param name="task">Данные о задаче</param>
+        ///<param name="id">Код изменяемой задачи</param>
+        ///<returns>Статус выполнения запроса</returns>
+        ///<remarks>Данный метод изменяет задачу в базе данных</remarks>
+        ///<response code="200">Задача успешно изменена</response>
+        ///<response code="500">При выполнении запроса возникли ошибки</response>
+        [Route("Edit")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Edit(int id, [FromForm] Tasks task)
+        {
+            try
+            {
+                TasksContext tasksContext = new TasksContext();
+                Tasks tasks = tasksContext.Tasks.Where(x => x.Id == id).First();
+                tasks = task;
+                tasksContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
