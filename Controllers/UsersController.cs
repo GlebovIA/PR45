@@ -35,5 +35,30 @@ namespace PR45.Controllers
             }
             catch (Exception ex) { return StatusCode(500); }
         }
+        ///<summary>
+        ///Регистрация пользователя
+        ///</summary>
+        ///<param name="Login">Логин пользователя</param>
+        ///<param name="Password">Пароль пользователя</param>
+        ///<returns>Данный метод предназначен для регистрации пользователя на сайте</returns>
+        ///<response code="200">Пользователь успешно зарегистрирован</response>
+        ///<response code="403">Ошибка запроса, данные не указаны</response>
+        ///<response code="500">При выполнении запроса возникли ошибки</response>
+        [Route("RegIn")]
+        [HttpPost]
+        [ProducesResponseType(typeof(Users), 200)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(500)]
+        public ActionResult RegIn([FromForm] string Login, [FromForm] string Password)
+        {
+            if (Login == null || Password == null) return StatusCode(403);
+            try
+            {
+                Users User = new Users { Login = Login, Password = Password };
+                new UsersContext().Users.Add(User);
+                return Json(User);
+            }
+            catch (Exception ex) { return StatusCode(500); }
+        }
     }
 }
