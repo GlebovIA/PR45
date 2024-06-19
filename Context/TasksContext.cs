@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Threading.Tasks;
 
 namespace PR45.Context
 {
-    public class TaskContext : DbContext
+    public class TasksContext : DbContext
     {
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Tasks> Tasks { get; set; }
         public TaskContext()
         {
             Database.EnsureCreated();
