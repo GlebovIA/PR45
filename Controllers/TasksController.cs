@@ -111,5 +111,48 @@ namespace PR45.Controllers
                 return StatusCode(500);
             }
         }
+        ///<summary>
+        ///Метод удаления задачи
+        ///</summary>
+        ///<param name="id">Код удаляемой задачи</param>
+        ///<returns>Статус выполнения запроса</returns>
+        ///<remarks>Данный метод удаляет задачу из базы данных</remarks>
+        ///<response code="204">Задача успешно удалена</response>
+        ///<response code="500">При выполнении запроса возникли ошибки</response>
+        [Route("Delete")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id)
+        {
+            TasksContext tasksContext = new TasksContext();
+            if (tasksContext.Tasks.Where(x => x.Id == id).First() != null)
+            {
+                tasksContext.Remove(tasksContext.Tasks.Where(x => x.Id == id).First());
+            }
+            else return StatusCode(500);
+            tasksContext.SaveChanges();
+            return StatusCode(204);
+        }
+        ///<summary>
+        ///Метод удаления всех задач
+        ///</summary>
+        ///<returns>Статус выполнения запроса</returns>
+        ///<remarks>Данный метод удаляет все задачи из базы данных</remarks>
+        ///<response code="204">Задачи успешно удалены</response>
+        ///<response code="500">При выполнении запроса возникли ошибки</response>
+        [Route("DeleteAll")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete()
+        {
+            TasksContext tasksContext = new TasksContext();
+            tasksContext.Tasks.RemoveRange(tasksContext.Tasks);
+            tasksContext.SaveChanges();
+            return StatusCode(204);
+        }
     }
 }
