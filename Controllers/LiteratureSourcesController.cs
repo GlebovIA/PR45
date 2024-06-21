@@ -31,5 +31,28 @@ namespace PR45.Controllers
         [ProducesResponseType(typeof(Literature_sources), 200)]
         [ProducesResponseType(500)]
         public ActionResult List(int id) => Json(new LiteratureSourcesContext().Literature_sources.Where(x => x.Id_source == id));
+        /// <summary>
+        /// Сортированный список носителей литературы
+        /// </summary>
+        /// <param name="key">Параметр сортировки</param>
+        /// <returns>Данный метод возвращает отсортированный список носителей литературы из базы данных</returns>
+        /// <response code="200">Запрос выполнен успешно</response>
+        /// <response code="500">Ошибка выполнения запроса</response>
+        [Route("Sort")]
+        [HttpGet]
+        [ProducesResponseType(typeof(Literature_sources), 200)]
+        [ProducesResponseType(500)]
+        public ActionResult Sort(string key)
+        {
+            switch (key)
+            {
+                case "Id":
+                    return Json(new LiteratureSourcesContext().Literature_sources.OrderBy(x => x.Id_source).ToList());
+                case "Name":
+                    return Json(new LiteratureSourcesContext().Literature_sources.OrderBy(x => x.Source_name).ToList());
+                default:
+                    return Json(new LiteratureSourcesContext().Literature_sources.OrderBy(x => x.Id_source).ToList());
+            }
+        }
     }
 }
