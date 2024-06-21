@@ -1,5 +1,8 @@
 ﻿namespace PR45.Model
 {
+    /// <summary>
+    /// Пользователи
+    /// </summary>
     public class Users
     {
         /// <summary>
