@@ -62,20 +62,26 @@ namespace PR45.Controllers
         ///<returns>Статус выполнения запроса</returns>
         ///<remarks>Данный метод добавляет задачу в базу данных</remarks>
         ///<response code="200">Задача успешно добавлена</response>
+        ///<response code="401">Пользователь не авторизован</response>
         ///<response code="500">При выполнении запроса возникли ошибки</response>
         [Route("Add")]
         [HttpPut]
         [ApiExplorerSettings(GroupName = "v3")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(500)]
-        public ActionResult Add([FromForm] Tasks task)
+        public ActionResult Add([FromForm] Tasks task, [FromForm] string token)
         {
             try
             {
-                TasksContext tasksContext = new TasksContext();
-                tasksContext.Tasks.Add(task);
-                tasksContext.SaveChanges();
-                return StatusCode(200);
+                if (new UsersContext().Users.Where(x => x.token.ToString() == token).First() != null)
+                {
+                    TasksContext tasksContext = new TasksContext();
+                    tasksContext.Tasks.Add(task);
+                    tasksContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401);
             }
             catch (Exception ex)
             {
@@ -96,15 +102,19 @@ namespace PR45.Controllers
         [ApiExplorerSettings(GroupName = "v3")]
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
-        public ActionResult Edit(int id, [FromForm] Tasks task)
+        public ActionResult Edit(int id, [FromForm] Tasks task, [FromForm] string token)
         {
             try
             {
-                TasksContext tasksContext = new TasksContext();
-                Tasks tasks = tasksContext.Tasks.Where(x => x.Id == id).First();
-                tasks = task;
-                tasksContext.SaveChanges();
-                return StatusCode(200);
+                if (new UsersContext().Users.Where(x => x.token.ToString() == token).First() != null)
+                {
+                    TasksContext tasksContext = new TasksContext();
+                    Tasks tasks = tasksContext.Tasks.Where(x => x.Id == id).First();
+                    tasks = task;
+                    tasksContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401);
             }
             catch (Exception ex)
             {
@@ -124,16 +134,20 @@ namespace PR45.Controllers
         [ApiExplorerSettings(GroupName = "v4")]
         [ProducesResponseType(204)]
         [ProducesResponseType(500)]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int id, string token)
         {
-            TasksContext tasksContext = new TasksContext();
-            if (tasksContext.Tasks.Where(x => x.Id == id).First() != null)
+            if (new UsersContext().Users.Where(x => x.token.ToString() == token).First() != null)
             {
-                tasksContext.Remove(tasksContext.Tasks.Where(x => x.Id == id).First());
+                TasksContext tasksContext = new TasksContext();
+                if (tasksContext.Tasks.Where(x => x.Id == id).First() != null)
+                {
+                    tasksContext.Remove(tasksContext.Tasks.Where(x => x.Id == id).First());
+                }
+                else return StatusCode(500);
+                tasksContext.SaveChanges();
+                return StatusCode(204);
             }
-            else return StatusCode(500);
-            tasksContext.SaveChanges();
-            return StatusCode(204);
+            else return StatusCode(401);
         }
         ///<summary>
         ///Метод удаления всех задач
@@ -147,12 +161,16 @@ namespace PR45.Controllers
         [ApiExplorerSettings(GroupName = "v4")]
         [ProducesResponseType(204)]
         [ProducesResponseType(500)]
-        public ActionResult Delete()
+        public ActionResult Delete(string token)
         {
-            TasksContext tasksContext = new TasksContext();
-            tasksContext.Tasks.RemoveRange(tasksContext.Tasks);
-            tasksContext.SaveChanges();
-            return StatusCode(204);
+            if (new UsersContext().Users.Where(x => x.token.ToString() == token).First() != null)
+            {
+                TasksContext tasksContext = new TasksContext();
+                tasksContext.Tasks.RemoveRange(tasksContext.Tasks);
+                tasksContext.SaveChanges();
+                return StatusCode(204);
+            }
+            else return StatusCode(401);
         }
     }
 }

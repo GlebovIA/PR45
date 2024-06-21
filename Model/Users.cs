@@ -17,5 +17,13 @@
         /// Пароль
         /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// Токен пользователя
+        /// </summary>
+        public int? token { get; set; }
+        /// <summary>
+        /// Полученый от базы данных токен
+        /// </summary>
+        public static int? Token { get; set; }
     }
 }

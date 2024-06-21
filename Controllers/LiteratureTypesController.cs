@@ -6,6 +6,7 @@ using System.Linq;
 namespace PR45.Controllers
 {
     [Route("api/LiteratureTypesController")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class LiteratureTypesController : Controller
     {
         /// <summary>

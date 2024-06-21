@@ -6,6 +6,7 @@ using System.Linq;
 namespace PR45.Controllers
 {
     [Route("api/WorkersController")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class WorkersController : Controller
     {
         /// <summary>

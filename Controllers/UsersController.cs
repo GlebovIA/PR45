@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PR45.Classes;
 using PR45.Context;
 using PR45.Model;
 using System;
@@ -30,7 +31,12 @@ namespace PR45.Controllers
             if (Login == null || Password == null) return StatusCode(403);
             try
             {
-                Users User = new UsersContext().Users.Where(x => x.Login == Login && x.Password == Password).First();
+                UsersContext usersContext = new UsersContext();
+                Users User = usersContext.Users.Where(x => x.Login == Login && x.Password == Hasher.GetHash(Password)).First();
+                Random random = new Random();
+                User.token = random.Next(int.MinValue, int.MaxValue);
+                Users.Token = User.token;
+                usersContext.SaveChanges();
                 return Json(User);
             }
             catch (Exception ex) { return StatusCode(500); }
@@ -54,11 +60,17 @@ namespace PR45.Controllers
             if (Login == null || Password == null) return StatusCode(403);
             try
             {
-                Users User = new Users { Login = Login, Password = Password };
-                new UsersContext().Users.Add(User);
+                UsersContext usersContext = new UsersContext();
+                string password = Hasher.GetHash(Password);
+                Users User = new Users { Login = Login, Password = password };
+                usersContext.Users.Add(User);
+                usersContext.SaveChanges();
                 return Json(User);
             }
-            catch (Exception ex) { return StatusCode(500); }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }
