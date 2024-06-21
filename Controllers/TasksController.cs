@@ -59,6 +59,7 @@ namespace PR45.Controllers
         ///Метод добавления задачи
         ///</summary>
         ///<param name="task">Данные о задаче</param>
+        ///<param name="token">Токен пользователя</param>
         ///<returns>Статус выполнения запроса</returns>
         ///<remarks>Данный метод добавляет задачу в базу данных</remarks>
         ///<response code="200">Задача успешно добавлена</response>
@@ -93,6 +94,7 @@ namespace PR45.Controllers
         ///</summary>
         ///<param name="task">Данные о задаче</param>
         ///<param name="id">Код изменяемой задачи</param>
+        ///<param name="token">Токен пользователя</param>
         ///<returns>Статус выполнения запроса</returns>
         ///<remarks>Данный метод изменяет задачу в базе данных</remarks>
         ///<response code="200">Задача успешно изменена</response>
@@ -104,27 +106,32 @@ namespace PR45.Controllers
         [ProducesResponseType(500)]
         public ActionResult Edit(int id, [FromForm] Tasks task, [FromForm] string token)
         {
-            try
+            //try
+            //{
+            if (new UsersContext().Users.Where(x => x.token.ToString() == token).First() != null)
             {
-                if (new UsersContext().Users.Where(x => x.token.ToString() == token).First() != null)
-                {
-                    TasksContext tasksContext = new TasksContext();
-                    Tasks tasks = tasksContext.Tasks.Where(x => x.Id == id).First();
-                    tasks = task;
-                    tasksContext.SaveChanges();
-                    return StatusCode(200);
-                }
-                else return StatusCode(401);
+                TasksContext tasksContext = new TasksContext();
+                Tasks tasks = tasksContext.Tasks.Where(x => x.Id == id).FirstOrDefault();
+                tasks.Name = task.Name;
+                tasks.Comment = task.Comment;
+                tasks.Priority = task.Priority;
+                tasks.DateExecute = task.DateExecute;
+                tasks.Done = task.Done;
+                tasksContext.SaveChanges();
+                return StatusCode(200);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500);
-            }
+            else return StatusCode(401);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500);
+            //}
         }
         ///<summary>
         ///Метод удаления задачи
         ///</summary>
         ///<param name="id">Код удаляемой задачи</param>
+        ///<param name="token">Токен пользователя</param>
         ///<returns>Статус выполнения запроса</returns>
         ///<remarks>Данный метод удаляет задачу из базы данных</remarks>
         ///<response code="204">Задача успешно удалена</response>
@@ -152,6 +159,7 @@ namespace PR45.Controllers
         ///<summary>
         ///Метод удаления всех задач
         ///</summary>
+        ///<param name="token">Токен пользователя</param>
         ///<returns>Статус выполнения запроса</returns>
         ///<remarks>Данный метод удаляет все задачи из базы данных</remarks>
         ///<response code="204">Задачи успешно удалены</response>
